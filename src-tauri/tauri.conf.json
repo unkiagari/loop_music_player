@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "loop_music_player",
+    "productName": "Loop Music Player",
     "version": "0.0.0"
   },
   "tauri": {
@@ -15,7 +15,10 @@
       "fs": {
         "all": false,
         "readDir": true,
-        "scope": ["**"]
+        "exists": true,
+        "scope": [
+          "**"
+        ]
       },
       "dialog": {
         "all": true
@@ -78,7 +81,7 @@
         "fullscreen": false,
         "height": 200,
         "resizable": false,
-        "title": "loop_music_player",
+        "title": "Loop Music Player",
         "width": 250
       }
     ]

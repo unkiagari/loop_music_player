@@ -21,6 +21,7 @@
     volume: number;
   };
 
+  let isShowSettings = false;
   let isPlaying = false;
   loopAudio.onChangePlayState = (_isPlaying) => {
     isPlaying = _isPlaying;
@@ -29,7 +30,7 @@
   const selectAudioDir = async () => {
     const dir = (await d.open({
       directory: true,
-      defaultPath: settings.audioDirPath,
+      defaultPath: settings.audioDirPath || null,
     })) as string | null;
     if (!dir) return;
     settings.audioDirPath = dir;
@@ -52,7 +53,10 @@
     localStorage.setItem("settings", JSON.stringify(settings));
   };
   const load = async () => {
-    if (!settings.audioDirPath) return;
+    if (!settings.audioDirPath) {
+      isShowSettings = true;
+      return;
+    }
     loopAudio.files = (await fs.readDir(settings.audioDirPath))
       .filter((v) => v.name.endsWith(".mp3"))
       .map((v) => ({
@@ -66,18 +70,18 @@
 
   onDestroy(() => loopAudio.stop());
 
-  let isShowSettings = false;
   $: {
     const barSize = 25;
-    const size = isShowSettings
-      ? new LogicalSize(250, 200 + barSize)
-      : new LogicalSize(250, 40 + barSize);
+    const size =
+      isShowSettings || !settings.audioDirPath
+        ? new LogicalSize(250, 180 + barSize)
+        : new LogicalSize(250, 40 + barSize);
     appWindow.setSize(size);
   }
 
   const getDirName = (path: string) => {
     const f = path.split("/");
-    return f[f.length - 1];
+    return f[f.length - 1] || "none";
   };
 </script>
 
@@ -88,10 +92,13 @@
   <button
     class:active={isShowSettings}
     on:click={() => (isShowSettings = !isShowSettings)}>settings</button>
+
+  {#if isShowSettings}
+    <hr />
+  {/if}
 {/if}
 
-{#if isShowSettings || !settings.audioDirPath}
-  <hr />
+{#if isShowSettings}
   <div>
     <table>
       <tr>
