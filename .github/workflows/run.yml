@@ -2,7 +2,7 @@ name: simple-echo
 on:
   push:
     branches:
-      - main
+      - release
 jobs:
   simple-echo:
     runs-on: ubuntu-latest
