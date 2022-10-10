@@ -14,7 +14,8 @@
     "allowlist": {
       "fs": {
         "all": false,
-        "readDir": true
+        "readDir": true,
+        "scope": ["**"]
       },
       "dialog": {
         "all": true
@@ -27,6 +28,10 @@
         "assetScope": [
           "**"
         ]
+      },
+      "window": {
+        "all": false,
+        "setSize": true
       }
     },
     "bundle": {
@@ -63,7 +68,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false
@@ -71,10 +76,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "resizable": true,
+        "height": 200,
+        "resizable": false,
         "title": "loop_music_player",
-        "width": 800
+        "width": 250
       }
     ]
   }
