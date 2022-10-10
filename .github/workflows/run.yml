@@ -7,7 +7,7 @@ jobs:
   simple-echo:
     runs-on: ${{ matrix.platform }}
     steps:
-      run: echo "this is pen"
+      - run: echo "this is pen"
 
 # name: learn-github-actions
 # on: [push]
