@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   simple-echo:
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     steps:
       - run: echo "this is pen"
 
