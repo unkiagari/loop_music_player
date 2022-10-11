@@ -6,6 +6,7 @@
   import { appWindow, LogicalSize } from "@tauri-apps/api/window";
   import { onDestroy } from "svelte";
   import LoopAudio from "./LoopAudio";
+  import TitleBar from "./TitleBar.svelte";
   // console.log(fs.readDir())
   const loopAudio = new LoopAudio();
   const settings = {
@@ -68,19 +69,23 @@
           .replace(/\\/g, "/"),
       }));
 
+    loopAudio.volume = settings.volume;
     loopAudio.crossfade = 3;
     loopAudio.audioDuration = settings.duration;
+  };
+  const saveAndLoad = () => {
+    save();
+    load();
   };
   load();
 
   onDestroy(() => loopAudio.stop());
 
   $: {
-    const barSize = 25;
     const size =
       isShowSettings || !settings.audioDirPath
-        ? new LogicalSize(250, 180 + barSize)
-        : new LogicalSize(250, 40 + barSize);
+        ? new LogicalSize(250, 180)
+        : new LogicalSize(250, 72);
     appWindow.setSize(size);
   }
 
@@ -90,70 +95,106 @@
   };
 </script>
 
-{#if settings.audioDirPath}
-  <button class:active={isPlaying} on:click={() => loopAudio.play()}
-    >play</button>
-  <button on:click={() => loopAudio.stop()}>stop</button>
-  <button
-    class:active={isShowSettings}
-    on:click={() => (isShowSettings = !isShowSettings)}>settings</button>
+<div class="wrap">
+  <TitleBar />
+  {#if settings.audioDirPath}
+    <div class="main-commands">
+      <button class:active={isPlaying} on:click={() => loopAudio.play()}>
+        <i class="icon-play-outline" /></button>
+      <button on:click={() => loopAudio.stop()}>
+        <i class="icon-stop-outline" />
+      </button>
+      <button
+        class:active={isShowSettings}
+        on:click={() => (isShowSettings = !isShowSettings)}>
+        <i class="icon-cog-outline" />
+      </button>
+    </div>
+  {/if}
 
   {#if isShowSettings}
-    <hr />
+    <div>
+      <table>
+        <tr>
+          <td>audioDir</td>
+          <td>
+            <button class="selectDirBtn" on:click={selectAudioDir}>
+              {getDirName(settings.audioDirPath)}
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>duration</td>
+          <td>
+            <input
+              type="number"
+              min="1"
+              bind:value={settings.duration}
+              on:change={saveAndLoad} />
+          </td>
+        </tr>
+        <tr>
+          <td>crossfade</td>
+          <td>
+            <input
+              type="range"
+              min="1"
+              max="5"
+              bind:value={settings.crossfade}
+              on:change={saveAndLoad} />
+            {settings.crossfade}
+          </td>
+        </tr>
+        <tr>
+          <td>volume</td>
+          <td>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step=".05"
+              bind:value={settings.volume}
+              on:input={saveAndLoad} />
+            {settings.volume}
+          </td>
+        </tr>
+      </table>
+    </div>
   {/if}
-{/if}
+</div>
 
-{#if isShowSettings}
-  <div>
-    <table>
-      <tr>
-        <td>audioDir</td>
-        <td>
-          <button on:click={selectAudioDir}
-            >{getDirName(settings.audioDirPath)}</button>
-        </td>
-      </tr>
-      <tr>
-        <td>duration</td>
-        <td>
-          <input
-            type="number"
-            min="1"
-            bind:value={settings.duration}
-            on:change={save} />
-        </td>
-      </tr>
-      <tr>
-        <td>crossfade</td>
-        <td>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            bind:value={settings.crossfade}
-            on:change={save} />
-          {settings.crossfade}
-        </td>
-      </tr>
-      <tr>
-        <td>volume</td>
-        <td>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step=".05"
-            bind:value={settings.volume}
-            on:change={save} />
-          {settings.volume}
-        </td>
-      </tr>
-    </table>
-  </div>
-{/if}
-
-<style>
+<style lang="scss">
   td > input {
     vertical-align: middle;
+  }
+
+  .wrap {
+    background: transparent;
+    border: 2px solid white;
+    border-radius: var(--window-radius);
+    overflow: hidden;
+    background: #333;
+  }
+
+  .main-commands {
+    display: flex;
+    button {
+      flex-grow: 1;
+      font-size: 32px;
+      margin: 0;
+      background-color: white;
+      &.active {
+        background-color: royalblue;
+        color: #eee;
+      }
+      &:hover {
+        background: white;
+        color: royalblue;
+      }
+    }
+  }
+
+  tr > td:first-child {
+    padding: 0 0.5em;
   }
 </style>

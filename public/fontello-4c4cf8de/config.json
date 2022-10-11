@@ -1,0 +1,40 @@
+{
+  "name": "",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "3a89ddb1c81111c15d6c4e26cc3c546a",
+      "css": "cog-outline",
+      "code": 59396,
+      "src": "typicons"
+    },
+    {
+      "uid": "8d2b91edcad12992a96fc5eac674700d",
+      "css": "play-outline",
+      "code": 59392,
+      "src": "typicons"
+    },
+    {
+      "uid": "4a770f766e0c1f06ce850db219684355",
+      "css": "stop-outline",
+      "code": 59393,
+      "src": "typicons"
+    },
+    {
+      "uid": "108c8ac13badc00ce66da014436e6eb1",
+      "css": "resize-small",
+      "code": 59394,
+      "src": "entypo"
+    },
+    {
+      "uid": "c709da589c923ba3c2ad48d9fc563e93",
+      "css": "cancel",
+      "code": 59395,
+      "src": "entypo"
+    }
+  ]
+}

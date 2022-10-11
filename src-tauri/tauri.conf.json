@@ -7,10 +7,11 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "Loop Music Player",
+    "productName": "LoopMusicPlayer",
     "version": "0.0.0"
   },
   "tauri": {
+    "macOSPrivateApi": true,
     "allowlist": {
       "fs": {
         "all": false,
@@ -34,7 +35,10 @@
       },
       "window": {
         "all": false,
-        "setSize": true
+        "setSize": true,
+        "startDragging": true,
+        "minimize": true,
+        "close": true
       }
     },
     "bundle": {
@@ -71,7 +75,7 @@
       }
     },
     "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost; media-src https://asset.localhost;"
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost; media-src asset: https://asset.localhost;"
     },
     "updater": {
       "active": false
@@ -79,10 +83,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 200,
+        "height": 350,
         "resizable": false,
         "title": "Loop Music Player",
-        "width": 250
+        "width": 250,
+        "decorations": false,
+        "transparent": true
       }
     ]
   }

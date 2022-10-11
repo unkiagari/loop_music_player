@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2022 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fontello" horiz-adv-x="1000" >
+<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="play-outline" unicode="&#xe800;" d="M104 610l0-520q1 0 1 1t1 0l265 259-262 256-3 3t-2 1z m0 105q44 0 74-30l343-335q-207-201-345-335-30-30-72-30t-73 31-31 74l0 520q0 44 31 74t73 31z" horiz-adv-x="521" />
+
+<glyph glyph-name="stop-outline" unicode="&#xe801;" d="M521 559l-417 0 0-418 417 0 0 418z m0 104q44 0 74-30t30-74l0-418q0-43-30-73t-74-30l-417 0q-44 0-74 30t-30 73l0 418q0 44 30 74t74 30l417 0z" horiz-adv-x="625" />
+
+<glyph glyph-name="resize-small" unicode="&#xe802;" d="M156 146l-106 100 296 0 0-296-100 106-146-156-100 100z m744 554l-154-144 104-100-294 0 0 294 100-104 144 154z" horiz-adv-x="900" />
+
+<glyph glyph-name="cancel" unicode="&#xe803;" d="M452 194q18-18 18-43t-18-43q-18-16-43-16t-43 16l-132 152-132-152q-18-16-43-16t-43 16q-16 18-16 43t16 43l138 156-138 158q-16 18-16 43t16 43q18 16 43 16t43-16l132-152 132 152q18 16 43 16t43-16q18-18 18-43t-18-43l-138-158z" horiz-adv-x="470" />
+
+<glyph glyph-name="cog-outline" unicode="&#xe804;" d="M560 741l-156 0-45-178-176 51-79-136 133-128-133-127 79-135 176 50 45-178 156 0 44 178 178-50 77 135-132 127 132 128-77 136-178-51z m0 104q35 0 63-22t37-57l19-73 74 21q15 4 29 4 60 0 90-53l77-135q18-31 13-66t-30-60l-55-54 55-52q25-25 30-60t-13-67l-77-136q-30-51-90-51-14 0-29 3l-74 21-17-74q-9-35-37-57t-65-22l-156 0q-36 0-64 22t-37 57l-19 74-72-22q-15-4-29-4-60 0-90 53l-79 135q-18 31-13 67t31 61l55 52-55 53q-25 25-30 60t12 67l79 135q30 53 90 53 14 0 29-4l72-21 19 73q9 35 37 57t64 22l156 0z m-78-391q-44 0-74-30t-30-74 30-74 74-30 74 31 31 73-31 73-74 31z m0 52q65 0 110-45t46-111-46-111-110-45-111 45-46 111 46 111 111 45z" horiz-adv-x="963" />
+</font>
+</defs>
+</svg>

@@ -3,7 +3,17 @@ interface IFile {
   path: string
 }
 export default class LoopAudio {
-  volume = .1
+  _volume = .5
+  get volume() { return this._volume }
+  set volume(v) {
+    if (this.intervalId === 0) {
+      this.audios.forEach((audio) => {
+        if (!audio.paused) audio.volume = v;
+      });
+    }
+    this._volume = v
+  }
+
   crossfade = 3
   audioDuration = 10
 

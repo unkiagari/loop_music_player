@@ -1,21 +1,30 @@
+:root {
+  --window-radius: 8px;
+  --title-bar--bg: #66a;
+  --title-bar--fg: white;
+  --title-bar-btn--bg-hober: #88f;
+}
+
 * {
   box-sizing: border-box;
-  user-select: none;
-  -webkit-user-select: none;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+
+
+  font-family: 'ubuntu', sans-serif;
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
-  font-size: 11px;
+  font-size: 14px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 body {
-  background: #333;
+  background: transparent;
   color: white;
-  padding: .5em;
 }
 
 button {
@@ -26,12 +35,10 @@ button {
   color: #333;
 }
 
-button.active {
-  background-color: royalblue;
-  color: #eee;
-}
 
-hr {
-  border: none;
-  border-top: 1px solid #aaa;
+.selectDirBtn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
 }
