@@ -61,8 +61,13 @@
       .filter((v) => v.name.endsWith(".mp3"))
       .map((v) => ({
         name: v.name,
-        path: convertFileSrc(v.path).replace(/%2F/g, "/").replace(/\\/g, "/"),
+        path: convertFileSrc(v.path)
+          .replace(/%2F/g, "/")
+          // .replace(/%5C/g, "/")
+          // .replace(/%3A/g, ":")
+          .replace(/\\/g, "/"),
       }));
+
     loopAudio.crossfade = 3;
     loopAudio.audioDuration = settings.duration;
   };
