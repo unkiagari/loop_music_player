@@ -61,7 +61,7 @@
       .filter((v) => v.name.endsWith(".mp3"))
       .map((v) => ({
         name: v.name,
-        path: convertFileSrc(v.path).replace(/%2F/g, "/"),
+        path: convertFileSrc(v.path).replace(/%2F/g, "/").replace(/\\/g, "/"),
       }));
     loopAudio.crossfade = 3;
     loopAudio.audioDuration = settings.duration;
@@ -80,7 +80,7 @@
   }
 
   const getDirName = (path: string) => {
-    const f = path.split("/");
+    const f = path.replace(/\\/g, "/").split("/");
     return f[f.length - 1] || "none";
   };
 </script>
