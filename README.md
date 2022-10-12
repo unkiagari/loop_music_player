@@ -1,7 +1,9 @@
-# Tauri + Svelte + Typescript
+# Loop Music Plyer
 
-This template should help get you started developing with Tauri, Svelte and TypeScript in Vite.
+![LoopMusicPlayer](./lpm.png)
 
-## Recommended IDE Setup
+Player that random switches looping music at regular intervals with crossfade.
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+creaed for my live streaming and work.  
+
+^v^
