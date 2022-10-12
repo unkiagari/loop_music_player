@@ -2,8 +2,8 @@
 
 ![LoopMusicPlayer](./lpm.png)
 
-Music Player that random switches looping music at regular intervals with crossfade.
+This music player randomly switches looping music at regular intervals with a crossfade. 
 
-created for my live streaming and work.  
+It was created for my live streaming and work.
 
 ^v^
