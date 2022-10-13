@@ -46,10 +46,6 @@ export default class LoopAudio {
   timeoutId = 0 as any
 
   onChangePlayState = (isPlaying: boolean) => { }
-  updatePlayingState() {
-    const isPlaying = this.audios.some(v => v.isPlaying())
-    this.onChangePlayState(isPlaying)
-  }
 
   play = () => {
     window["players"] = this.audios
@@ -69,7 +65,7 @@ export default class LoopAudio {
     console.log(newAudioInfo.name)
     this.audioFileIndex++
     this.audioElmIndex++
-    this.updatePlayingState()
+    this.onChangePlayState(true)
 
     const prevStep = prevAudio.volume / 60 / this.crossfade
     const newStep = this.volume / 60 / this.crossfade
@@ -96,7 +92,7 @@ export default class LoopAudio {
     clearInterval(this.intervalId)
     clearTimeout(this.timeoutId)
     this.audios.forEach(v => v.pause())
-    this.updatePlayingState()
+    this.onChangePlayState(false)
   }
 }
 
