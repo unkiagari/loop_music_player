@@ -1,3 +1,6 @@
+import { Gapless5 } from "@regosen/gapless-5"
+
+
 interface IFile {
   name: string
   path: string
@@ -8,7 +11,7 @@ export default class LoopAudio {
   set volume(v) {
     if (this.intervalId === 0) {
       this.audios.forEach((audio) => {
-        if (!audio.paused) audio.volume = v;
+        if (!audio.isPlaying) audio.volume = v;
       });
     }
     this._volume = v
@@ -22,8 +25,17 @@ export default class LoopAudio {
 
   audios = Array(2).
     fill(0).map(v => {
-      const audio = document.createElement("audio")
-      audio.loop = true
+      const audio = new Gapless5({
+        loop: true,
+        singleMode: true
+      }) as {
+        play: () => void
+        volume: number
+        removeAllTracks: () => void
+        addTrack: (path: string) => void
+        isPlaying: () => boolean
+        pause: () => void
+      }
       return audio
     })
 
@@ -35,12 +47,13 @@ export default class LoopAudio {
 
   onChangePlayState = (isPlaying: boolean) => { }
   updatePlayingState() {
-    const isPlaying = !this.audios.every(v => v.paused)
+    const isPlaying = this.audios.some(v => v.isPlaying())
     this.onChangePlayState(isPlaying)
   }
 
   play = () => {
-    if (this.audios.every(v => v.paused)) {
+    window["players"] = this.audios
+    if (this.audios.every(v => !v.isPlaying())) {
       this.audioFileIndex = 0
       this.audioElmIndex = 0
       this.shuffledFiles = shuffle(this.files)
@@ -49,14 +62,15 @@ export default class LoopAudio {
 
     const prevAudio = this.audios[(this.audioElmIndex) % 2]
     const newAudio = this.audios[(this.audioElmIndex + 1) % 2]
-    newAudio.src = this.shuffledFiles[this.audioFileIndex % this.shuffledFiles.length].path
-    newAudio.volume = 0
+    newAudio.removeAllTracks()
+    newAudio.addTrack(this.shuffledFiles[this.audioFileIndex % this.shuffledFiles.length].path)
     newAudio.play()
     this.audioFileIndex++
     this.audioElmIndex++
     this.updatePlayingState()
 
     const step = this.volume / (1000 / 60) / this.crossfade
+    console.log("step", step)
 
     clearInterval(this.intervalId)
     this.intervalId = 0
