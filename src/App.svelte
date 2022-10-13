@@ -70,7 +70,7 @@
       }));
 
     loopAudio.volume = settings.volume;
-    loopAudio.crossfade = 3;
+    loopAudio.crossfade = settings.crossfade;
     loopAudio.audioDuration = settings.duration;
   };
   const saveAndLoad = () => {
