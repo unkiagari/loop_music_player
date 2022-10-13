@@ -71,13 +71,14 @@ export default class LoopAudio {
     this.audioElmIndex++
     this.updatePlayingState()
 
-    const step = this.volume / (1000 / 60) / this.crossfade
+    const prevStep = prevAudio.volume / 60 / this.crossfade
+    const newStep = this.volume / 60 / this.crossfade
 
     clearInterval(this.intervalId)
     this.intervalId = 0
     this.intervalId = setInterval(() => {
-      prevAudio.volume = Math.max(0, prevAudio.volume - step)
-      newAudio.volume = Math.max(this.volume, prevAudio.volume + step)
+      prevAudio.volume = Math.max(0, prevAudio.volume - prevStep)
+      newAudio.volume = Math.min(this.volume, newAudio.volume + newStep)
       if (prevAudio.volume === 0) prevAudio.pause()
       if (prevAudio.volume === 0
         && newAudio.volume === this.volume) {
@@ -87,6 +88,8 @@ export default class LoopAudio {
     }, 1000 / 60)
 
     clearTimeout(this.timeoutId)
+
+    // this.audioDuration = .1
     this.timeoutId = setTimeout(this.play, this.audioDuration * 1000 * 60)
   }
   stop() {

@@ -42,8 +42,8 @@
     if (isNaN(settings.duration) || settings.duration < 1) {
       settings.duration = 1;
     }
-    if (isNaN(settings.crossfade) || settings.crossfade < 1) {
-      settings.crossfade = 1;
+    if (isNaN(settings.crossfade) || settings.crossfade < 0.1) {
+      settings.crossfade = 0.1;
     }
     if (isNaN(settings.volume)) {
       settings.volume = 0.5;
@@ -137,8 +137,9 @@
           <td>
             <input
               type="range"
-              min="1"
+              min="0.1"
               max="5"
+              step="0.1"
               bind:value={settings.crossfade}
               on:change={saveAndLoad} />
             {settings.crossfade}
