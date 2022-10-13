@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "LoopMusicPlayer",
-    "version": "0.0.1"
+    "version": "0.0.2"
   },
   "tauri": {
     "macOSPrivateApi": true,
@@ -85,7 +85,7 @@
         "fullscreen": false,
         "height": 350,
         "resizable": false,
-        "title": "Loop Music Player",
+        "title": "LoopMusicPlayer",
         "width": 250,
         "decorations": false,
         "transparent": true

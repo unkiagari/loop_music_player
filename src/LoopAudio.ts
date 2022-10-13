@@ -11,7 +11,7 @@ export default class LoopAudio {
   set volume(v) {
     if (this.intervalId === 0) {
       this.audios.forEach((audio) => {
-        if (!audio.isPlaying) audio.volume = v;
+        if (audio.isPlaying()) audio.volume = v;
       });
     }
     this._volume = v
