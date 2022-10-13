@@ -1,0 +1,4 @@
+gapless audio
+https://github.com/regosen/Gapless-5
+https://github.com/veltman/loopify
+https://github.com/Hivenfour/SeamlessLoop

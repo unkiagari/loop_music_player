@@ -1,13 +1,12 @@
 <script lang="ts">
   import * as d from "@tauri-apps/api/dialog";
   import * as fs from "@tauri-apps/api/fs";
-  import { homeDir } from "@tauri-apps/api/path";
   import { convertFileSrc } from "@tauri-apps/api/tauri";
   import { appWindow, LogicalSize } from "@tauri-apps/api/window";
   import { onDestroy } from "svelte";
   import LoopAudio from "./LoopAudio";
   import TitleBar from "./TitleBar.svelte";
-  // console.log(fs.readDir())
+
   const loopAudio = new LoopAudio();
   const settings = {
     audioDirPath: "",
