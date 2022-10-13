@@ -62,15 +62,16 @@ export default class LoopAudio {
 
     const prevAudio = this.audios[(this.audioElmIndex) % 2]
     const newAudio = this.audios[(this.audioElmIndex + 1) % 2]
+    const newAudioInfo = this.shuffledFiles[this.audioFileIndex % this.shuffledFiles.length]
     newAudio.removeAllTracks()
-    newAudio.addTrack(this.shuffledFiles[this.audioFileIndex % this.shuffledFiles.length].path)
+    newAudio.addTrack(newAudioInfo.path)
     newAudio.play()
+    console.log(newAudioInfo.name)
     this.audioFileIndex++
     this.audioElmIndex++
     this.updatePlayingState()
 
     const step = this.volume / (1000 / 60) / this.crossfade
-    console.log("step", step)
 
     clearInterval(this.intervalId)
     this.intervalId = 0
