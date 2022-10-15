@@ -1,6 +1,8 @@
 const ctx = new AudioContext
 
+let idcounter = 0
 class AudioPipeline {
+  id = ++idcounter
   src = null as null | AudioBufferSourceNode
   gain = ctx.createGain()
   constructor(dest: AudioNode) {
@@ -66,6 +68,7 @@ export default class LoopAudio {
 
     if (this.fadeIntervalId) return
     this.fadeIntervalId = setInterval(() => {
+
       const step = 1 / 60 / this.crossfadeFactor
       this.audio!.volume += step
       this.audioBuffer4Fadeout.forEach(audio => {
@@ -77,6 +80,7 @@ export default class LoopAudio {
         .filter(v => {
           const needSweep = v.volume === 0
           if (needSweep) {
+            v.stop()
             v.sweep()
             this.audioPool.push(v)
           }
@@ -92,10 +96,13 @@ export default class LoopAudio {
   }
 
   stop() {
+    clearInterval(this.fadeIntervalId)
+    this.fadeIntervalId = 0
     if (this.audio) {
       this.audio?.stop()
       this.audio?.sweep()
       this.audioPool.push(this.audio)
+      this.audio = null
     }
     this.audioBuffer4Fadeout.forEach(v => {
       v.stop()
