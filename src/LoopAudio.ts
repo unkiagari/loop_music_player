@@ -1,105 +1,109 @@
-import { Gapless5 } from "@regosen/gapless-5"
+const ctx = new AudioContext
 
-
-interface IFile {
-  name: string
-  path: string
-}
-export default class LoopAudio {
-  _volume = .5
-  get volume() { return this._volume }
-  set volume(v) {
-    if (this.intervalId === 0) {
-      this.audios.forEach((audio) => {
-        if (audio.isPlaying()) audio.volume = v;
-      });
-    }
-    this._volume = v
+class AudioPipeline {
+  src = null as null | AudioBufferSourceNode
+  gain = ctx.createGain()
+  constructor(dest: AudioNode) {
+    this.gain.connect(dest)
   }
 
-  crossfade = 3
-  audioDuration = 10
+  isPlay = false
 
-  audioElmIndex = 0
-  audioFileIndex = 0
-
-  audios = Array(2).
-    fill(0).map(v => {
-      const audio = new Gapless5({
-        loop: true,
-        singleMode: true
-      }) as {
-        play: () => void
-        volume: number
-        removeAllTracks: () => void
-        addTrack: (path: string) => void
-        isPlaying: () => boolean
-        pause: () => void
-      }
-      return audio
-    })
-
-  files = [] as IFile[]
-  shuffledFiles = [] as IFile[]
-
-  intervalId = 0 as any
-  timeoutId = 0 as any
-
-  onChangePlayState = (isPlaying: boolean) => { }
-
-  play = () => {
-    window["players"] = this.audios
-    if (this.audios.every(v => !v.isPlaying())) {
-      this.audioFileIndex = 0
-      this.audioElmIndex = 0
-      this.shuffledFiles = shuffle(this.files)
-      this.audios.forEach(v => v.volume = 0)
-    }
-
-    const prevAudio = this.audios[(this.audioElmIndex) % 2]
-    const newAudio = this.audios[(this.audioElmIndex + 1) % 2]
-    const newAudioInfo = this.shuffledFiles[this.audioFileIndex % this.shuffledFiles.length]
-    newAudio.removeAllTracks()
-    newAudio.addTrack(newAudioInfo.path)
-    newAudio.play()
-    console.log(newAudioInfo.name)
-    this.audioFileIndex++
-    this.audioElmIndex++
-    this.onChangePlayState(true)
-
-    const prevStep = prevAudio.volume / 60 / this.crossfade
-    const newStep = this.volume / 60 / this.crossfade
-
-    clearInterval(this.intervalId)
-    this.intervalId = 0
-    this.intervalId = setInterval(() => {
-      prevAudio.volume = Math.max(0, prevAudio.volume - prevStep)
-      newAudio.volume = Math.min(this.volume, newAudio.volume + newStep)
-      if (prevAudio.volume === 0) prevAudio.pause()
-      if (prevAudio.volume === 0
-        && newAudio.volume === this.volume) {
-        clearInterval(this.intervalId)
-        this.intervalId = 0
-      }
-    }, 1000 / 60)
-
-    clearTimeout(this.timeoutId)
-
-    // this.audioDuration = .1
-    this.timeoutId = setTimeout(this.play, this.audioDuration * 1000 * 60)
+  async play(uri: string) {
+    const audioData = await fetch(uri)
+      .then(res => res.arrayBuffer())
+    const buffer = await ctx.decodeAudioData(audioData)
+    this.src = ctx.createBufferSource()
+    this.src.connect(this.gain)
+    this.src.buffer = buffer
+    this.src.loop = true
+    this.src.start()
+    this.isPlay = true
   }
+
   stop() {
-    clearInterval(this.intervalId)
-    clearTimeout(this.timeoutId)
-    this.audios.forEach(v => v.pause())
-    this.onChangePlayState(false)
+    this.src?.stop()
+    this.isPlay = false
+  }
+
+
+  get volume() {
+    return this.gain.gain.value
+  }
+  set volume(v) {
+    this.gain.gain.value = Math.max(0, Math.min(1, v))
+  }
+
+  sweep() {
+    // if disconnect, gc sweep audiobuffer
+    this.src?.stop()
+    this.src?.disconnect()
+    this.src = null
   }
 }
 
-const shuffle = ([...array]) => {
-  for (let i = array.length - 1; i >= 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+export default class LoopAudio {
+  masterGain = ctx.createGain()
+  audioPool = [] as AudioPipeline[]
+  audioBuffer4Fadeout = [] as AudioPipeline[]
+  audio = null as null | AudioPipeline
+
+  crossfadeFactor = 1
+
+  constructor() {
+    this.masterGain.connect(ctx.destination)
   }
-  return array;
+
+  fadeIntervalId = 0
+  async play(path: string) {
+    if (this.audio) {
+      this.audioBuffer4Fadeout.push(this.audio)
+    }
+
+    this.audio = this.audioPool.pop() ?? new AudioPipeline(this.masterGain)
+    this.audio.volume = 0
+    await this.audio.play(path)
+
+    if (this.fadeIntervalId) return
+    this.fadeIntervalId = setInterval(() => {
+      const step = 1 / 60 / this.crossfadeFactor
+      this.audio!.volume += step
+      this.audioBuffer4Fadeout.forEach(audio => {
+        audio.volume -= step
+      })
+
+
+      this.audioBuffer4Fadeout = this.audioBuffer4Fadeout
+        .filter(v => {
+          const needSweep = v.volume === 0
+          if (needSweep) {
+            v.sweep()
+            this.audioPool.push(v)
+          }
+          return !needSweep
+        })
+
+      // fade処理が終了している場合はintervalをストップ
+      if (this.audio?.volume === 1 && this.audioBuffer4Fadeout.length === 0) {
+        clearInterval(this.fadeIntervalId)
+        this.fadeIntervalId = 0
+      }
+    }, 1000 / 60) as any
+  }
+
+  stop() {
+    if (this.audio) {
+      this.audio?.stop()
+      this.audio?.sweep()
+      this.audioPool.push(this.audio)
+    }
+    this.audioBuffer4Fadeout.forEach(v => {
+      v.stop()
+      v.sweep()
+      this.audioPool.push(v)
+    })
+    this.audioBuffer4Fadeout.length = 0
+  }
+  get volume() { return this.masterGain.gain.value }
+  set volume(v) { this.masterGain.gain.value = v }
 }

@@ -4,10 +4,10 @@
   import { convertFileSrc } from "@tauri-apps/api/tauri";
   import { appWindow, LogicalSize } from "@tauri-apps/api/window";
   import { onDestroy } from "svelte";
-  import LoopAudio from "./LoopAudio";
   import TitleBar from "./TitleBar.svelte";
 
-  const loopAudio = new LoopAudio();
+  import am from "./AudioManager";
+
   const settings = {
     audioDirPath: "",
     duration: 10,
@@ -23,9 +23,6 @@
 
   let isShowSettings = false;
   let isPlaying = false;
-  loopAudio.onChangePlayState = (_isPlaying) => {
-    isPlaying = _isPlaying;
-  };
 
   const selectAudioDir = async () => {
     const dir = (await d.open({
@@ -57,20 +54,23 @@
       isShowSettings = true;
       return;
     }
-    loopAudio.files = (await fs.readDir(settings.audioDirPath))
+
+    am.files = (await fs.readDir(settings.audioDirPath))
       .filter((v) => v.name.endsWith(".mp3"))
       .map((v) => ({
         name: v.name,
-        path: convertFileSrc(v.path)
+        uri: convertFileSrc(v.path)
           .replace(/%2F/g, "/")
           // .replace(/%5C/g, "/")
           // .replace(/%3A/g, ":")
           .replace(/\\/g, "/"),
+        path: v.path,
       }));
+    am.shuffle();
 
-    loopAudio.volume = settings.volume;
-    loopAudio.crossfade = settings.crossfade;
-    loopAudio.audioDuration = settings.duration;
+    am.volume = settings.volume;
+    am.crossfade = settings.crossfade;
+    am.audioDuration = settings.duration;
   };
   const saveAndLoad = () => {
     save();
@@ -78,7 +78,7 @@
   };
   load();
 
-  onDestroy(() => loopAudio.stop());
+  onDestroy(() => am.stop());
 
   $: {
     const size =
@@ -98,9 +98,18 @@
   <TitleBar />
   {#if settings.audioDirPath}
     <div class="main-commands">
-      <button class:active={isPlaying} on:click={() => loopAudio.play()}>
+      <button
+        class:active={isPlaying}
+        on:click={() => {
+          am.play();
+          isPlaying = true;
+        }}>
         <i class="icon-play-outline" /></button>
-      <button on:click={() => loopAudio.stop()}>
+      <button
+        on:click={() => {
+          am.stop();
+          isPlaying = false;
+        }}>
         <i class="icon-stop-outline" />
       </button>
       <button
