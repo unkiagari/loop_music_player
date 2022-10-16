@@ -34,6 +34,7 @@ class AudioManager {
     this.la.stop()
     this.index = 0
     this.shuffle()
+    clearTimeout(this.nextMusicTimeoutId)
   }
 
   get volume() { return this.la.volume }
