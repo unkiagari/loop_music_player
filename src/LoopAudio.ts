@@ -26,6 +26,7 @@ class AudioPipeline {
   stop() {
     this.src?.stop()
     this.isPlay = false
+    this.src.loop = false
   }
 
 
@@ -74,6 +75,7 @@ export default class LoopAudio {
       this.audioBuffer4Fadeout.forEach(audio => {
         audio.volume -= step
       })
+      // console.log("vol?",step, this.audio.volume, this.audioBuffer4Fadeout.map(v => v.volume))
 
 
       this.audioBuffer4Fadeout = this.audioBuffer4Fadeout

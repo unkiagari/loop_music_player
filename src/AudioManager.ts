@@ -18,6 +18,11 @@ class AudioManager {
   }
 
   play() {
+    clearTimeout(this.nextMusicTimeoutId)
+    this.nextMusicTimeoutId = setTimeout(() => {
+      this.play()
+    }, this.audioDuration * 1000 * 60) as any
+    
     if (this.shuffledFiles.length === 0) return
     const t = this.shuffledFiles[this.index % this.shuffledFiles.length]
     this.index++
@@ -25,10 +30,6 @@ class AudioManager {
     console.log("play", t.name)
     this.la.play(t.uri)
 
-    clearTimeout(this.nextMusicTimeoutId)
-    this.nextMusicTimeoutId = setTimeout(() => {
-      this.play()
-    }, this.audioDuration * 1000 * 60) as any
   }
   stop() {
     this.la.stop()
