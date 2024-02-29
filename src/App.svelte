@@ -161,7 +161,7 @@
               type="range"
               min="0"
               max="1"
-              step=".05"
+              step=".01"
               bind:value={settings.volume}
               on:input={saveAndLoad} />
             {settings.volume}

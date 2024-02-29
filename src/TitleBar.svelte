@@ -3,7 +3,7 @@
 </script>
 
 <div data-tauri-drag-region class="titlebar">
-  <div class="title">LoopMusicPlayer v1.0.0</div>
+  <div class="title">LoopMusicPlayer v1.0.1</div>
 
   <div class="navs">
     <button class="titlebar-button" on:click={() => appWindow.minimize()}>
