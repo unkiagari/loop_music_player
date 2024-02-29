@@ -12,6 +12,7 @@ class AudioManager {
   shuffledFiles = [] as IFile[]
   index = 0
   nextMusicTimeoutId = 0
+  nextMusicTime = Infinity
 
   shuffle() {
     this.shuffledFiles = shuffle(this.files)

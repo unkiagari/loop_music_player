@@ -1,3 +1,5 @@
+import IntervalWorker from "./IntervalWorker"
+
 const ctx = new AudioContext
 
 let idcounter = 0
@@ -52,12 +54,35 @@ export default class LoopAudio {
   audio = null as null | AudioPipeline
 
   crossfadeFactor = 1
+  processFade = () => {
+    const step = 1 / 60 / this.crossfadeFactor
+    this.audio!.volume += step
+    this.audioBuffer4Fadeout.forEach(audio => {
+      audio.volume -= step
+    })
+
+    this.audioBuffer4Fadeout = this.audioBuffer4Fadeout
+      .filter(v => {
+        const needSweep = v.volume === 0
+        if (needSweep) {
+          v.stop()
+          v.sweep()
+          this.audioPool.push(v)
+        }
+        return !needSweep
+      })
+
+    // fade処理が終了している場合はintervalをストップ
+    if (this.audio?.volume === 1 && this.audioBuffer4Fadeout.length === 0) {
+      this.fader.stop()
+    }
+  }
+  fader = new IntervalWorker(this.processFade)
 
   constructor() {
     this.masterGain.connect(ctx.destination)
   }
 
-  fadeIntervalId = 0
   async play(path: string) {
     if (this.audio) {
       this.audioBuffer4Fadeout.push(this.audio)
@@ -67,39 +92,11 @@ export default class LoopAudio {
     this.audio.volume = 0
     await this.audio.play(path)
 
-    if (this.fadeIntervalId) return
-    this.fadeIntervalId = setInterval(() => {
-
-      const step = 1 / 60 / this.crossfadeFactor
-      this.audio!.volume += step
-      this.audioBuffer4Fadeout.forEach(audio => {
-        audio.volume -= step
-      })
-      // console.log("vol?",step, this.audio.volume, this.audioBuffer4Fadeout.map(v => v.volume))
-
-
-      this.audioBuffer4Fadeout = this.audioBuffer4Fadeout
-        .filter(v => {
-          const needSweep = v.volume === 0
-          if (needSweep) {
-            v.stop()
-            v.sweep()
-            this.audioPool.push(v)
-          }
-          return !needSweep
-        })
-
-      // fade処理が終了している場合はintervalをストップ
-      if (this.audio?.volume === 1 && this.audioBuffer4Fadeout.length === 0) {
-        clearInterval(this.fadeIntervalId)
-        this.fadeIntervalId = 0
-      }
-    }, 1000 / 60) as any
+    this.fader.start()
   }
 
   stop() {
-    clearInterval(this.fadeIntervalId)
-    this.fadeIntervalId = 0
+    this.fader.stop()
     if (this.audio) {
       this.audio?.stop()
       this.audio?.sweep()
