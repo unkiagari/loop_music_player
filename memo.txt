@@ -1,3 +1,5 @@
+現在プレイ中の曲名をどこかに表示
+
 gapless audio
 https://github.com/regosen/Gapless-5
 https://github.com/veltman/loopify
